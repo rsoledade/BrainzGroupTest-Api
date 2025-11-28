@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using StudentEvents.Infrastructure.Data;
-using StudentEvents.Infrastructure.Repositories;
 using StudentEvents.Application.Services;
+using StudentEvents.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -10,14 +10,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-var connectionString = configuration.GetConnectionString("DefaultConnection") ??
-    "Server=(localdb)\\mssqllocaldb;Database=StudentEventsDb;Trusted_Connection=True;MultipleActiveResultSets=true";
+var connectionString = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StudentEventsDbContext>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddHttpClient();
 
 var jwtSection = configuration.GetSection("JwtSettings");
 var jwtKey = jwtSection.GetValue<string>("Key") ?? "please-change-this-secret-key";
+var jwtIssuer = jwtSection.GetValue<string>("Issuer") ?? "StudentEventsApi";
+var jwtAudience = jwtSection.GetValue<string>("Audience") ?? "StudentEventsApiUsers";
+var jwtExpireMinutes = jwtSection.GetValue<int?>("ExpireMinutes") ?? 60;
 
 builder.Services.AddAuthentication(options =>
 {
@@ -32,10 +34,15 @@ builder.Services.AddAuthentication(options =>
     {
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new Microsoft.IdentityModel.Tokens.SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtKey)),
-        ValidateIssuer = false,
-        ValidateAudience = false
+        ValidateIssuer = true,
+        ValidIssuer = jwtIssuer,
+        ValidateAudience = true,
+        ValidAudience = jwtAudience,
+        // allow small clock skew
+        ClockSkew = TimeSpan.FromSeconds(30)
     };
 });
+
 
 builder.Services.AddAuthorization();
 
@@ -48,11 +55,12 @@ builder.Services.AddHostedService<GraphSyncBackgroundService>();
 
 var app = builder.Build();
 
-// seed
+// ensure database is created and migrations applied
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<StudentEventsDbContext>();
-    StudentEvents.Infrastructure.Data.DbSeeder.Seed(db);
+    db.Database.Migrate();
+    DbSeeder.Seed(db);
 }
 
 if (app.Environment.IsDevelopment())
