@@ -1,0 +1,2 @@
+Run migrations: install dotnet-ef tool and run from repository root with project pointing to src/StudentEvents.Api: dotnet ef migrations add Initial --project src/StudentEvents.Infrastructure --startup-project src/StudentEvents.Api
+Then apply: dotnet ef database update --project src/StudentEvents.Infrastructure --startup-project src/StudentEvents.Api
