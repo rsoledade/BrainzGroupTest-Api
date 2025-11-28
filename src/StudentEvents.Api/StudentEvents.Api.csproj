@@ -6,6 +6,7 @@
  <ImplicitUsings>enable</ImplicitUsings>
  <UserSecretsId>0bfc999d-6474-47ff-b4ac-f95a43b77905</UserSecretsId>
  <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+ <DockerfileContext>..\..</DockerfileContext>
  </PropertyGroup>
 
  <ItemGroup>
@@ -15,6 +16,7 @@
  </ItemGroup>
 
  <ItemGroup>
+ <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
  <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
  <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.0" />
  <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
