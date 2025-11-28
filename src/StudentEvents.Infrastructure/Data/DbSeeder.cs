@@ -9,15 +9,24 @@ namespace StudentEvents.Infrastructure.Data
         {
             if (!db.Users.Any())
             {
-                var user = new User
+                var admin = new User
                 {
                     Id = Guid.NewGuid(),
                     Email = "admin@school.local",
                     DisplayName = "Admin User",
-                    PasswordHash = HashPassword("P@ssw0rd!")
+                    PasswordHash = HashPassword("123456")
                 };
 
-                db.Users.Add(user);
+                var userPadrao = new User
+                {
+                    Id = Guid.NewGuid(),
+                    Email = "userpadrao@school.local",
+                    DisplayName = "Usuario Padrao",
+                    PasswordHash = HashPassword("123456")
+                };
+
+                db.Users.Add(admin);
+                db.Users.Add(userPadrao);
                 db.SaveChanges();
             }
         }
