@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using StudentEvents.Infrastructure.Repositories;
+using StudentEvents.Application.Services;
 
 namespace StudentEvents.Api.Controllers
 {
@@ -8,41 +8,44 @@ namespace StudentEvents.Api.Controllers
     [Route("api/[controller]")]
     public class StudentsController : ControllerBase
     {
-        private readonly IStudentRepository _repo;
+        private readonly IStudentService _service;
 
-        public StudentsController(IStudentRepository repo)
+        public StudentsController(IStudentService service)
         {
-            _repo = repo;
+            _service = service;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
-            var list = await _repo.GetAllAsync();
-            var res = list.Select(s => new
+            var listStudents = await _service.GetAllAsync();
+            var response = listStudents.Select(student => new
             {
-                id = s.Id,
-                displayName = s.DisplayName,
-                mail = s.Mail
+                id = student.Id,
+                displayName = student.DisplayName,
+                mail = student.Mail
             });
-            return Ok(res);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var s = await _repo.GetByIdAsync(id);
-            if (s == null) return NotFound();
-            var res = new
+            var student = await _service.GetByIdAsync(id);
+
+            if (student == null) return NotFound();
+
+            var response = new
             {
-                id = s.Id,
-                displayName = s.DisplayName,
-                mail = s.Mail,
-                events = s.Events.Select(e => new { id = e.Id, subject = e.Subject, start = e.Start, end = e.End })
+                id = student.Id,
+                displayName = student.DisplayName,
+                mail = student.Mail,
+                events = student.Events.Select(e => new { id = e.Id, subject = e.Subject, start = e.Start, end = e.End })
             };
-            return Ok(res);
+
+            return Ok(response);
         }
     }
 }

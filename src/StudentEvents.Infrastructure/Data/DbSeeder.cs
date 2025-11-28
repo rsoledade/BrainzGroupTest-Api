@@ -1,20 +1,24 @@
 using StudentEvents.Domain.Entities;
 using System.Security.Cryptography;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace StudentEvents.Infrastructure.Data
 {
     public static class DbSeeder
     {
-        public static void Seed(StudentEventsDbContext db)
+        public static async Task SeedAsync(StudentEventsDbContext db, IConfiguration? configuration = null)
         {
-            if (!db.Users.Any())
+            if (!await db.Users.AnyAsync())
             {
+                var defaultPassword = configuration?["TestUsers:DefaultPassword"] ?? "123456";
+
                 var admin = new User
                 {
                     Id = Guid.NewGuid(),
                     Email = "admin@school.local",
                     DisplayName = "Admin User",
-                    PasswordHash = HashPassword("123456")
+                    PasswordHash = HashPassword(defaultPassword)
                 };
 
                 var userPadrao = new User
@@ -22,13 +26,19 @@ namespace StudentEvents.Infrastructure.Data
                     Id = Guid.NewGuid(),
                     Email = "userpadrao@school.local",
                     DisplayName = "Usuario Padrao",
-                    PasswordHash = HashPassword("123456")
+                    PasswordHash = HashPassword(defaultPassword)
                 };
 
                 db.Users.Add(admin);
                 db.Users.Add(userPadrao);
-                db.SaveChanges();
+                await db.SaveChangesAsync();
             }
+        }
+
+        // synchronous wrapper kept for compatibility
+        public static void Seed(StudentEventsDbContext db)
+        {
+            SeedAsync(db).GetAwaiter().GetResult();
         }
 
         private static string HashPassword(string password)

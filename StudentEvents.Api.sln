@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentEvents.Infrastructur
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentEvents.Application", "src\StudentEvents.Application\StudentEvents.Application.csproj", "{F3E51DA2-4FCB-49E1-8BF4-344DAEA1F254}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudentEvents.Tests", "src\StudentEvents.Tests\StudentEvents.Tests.csproj", "{CEA36ECC-E208-D2DB-93D4-8BC3F6166FD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F3E51DA2-4FCB-49E1-8BF4-344DAEA1F254}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F3E51DA2-4FCB-49E1-8BF4-344DAEA1F254}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F3E51DA2-4FCB-49E1-8BF4-344DAEA1F254}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEA36ECC-E208-D2DB-93D4-8BC3F6166FD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEA36ECC-E208-D2DB-93D4-8BC3F6166FD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEA36ECC-E208-D2DB-93D4-8BC3F6166FD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEA36ECC-E208-D2DB-93D4-8BC3F6166FD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
